@@ -1,0 +1,26 @@
+#include<iostream>
+#include<fstream>
+using namespace std;
+int main(){
+  
+  char* filename = new char[100];
+  //  cin.ignore();
+  //  cin.get(filename, 100);
+  ifstream infile;
+  infile.open("firstnames.txt");
+  if(infile.fail()){
+    cout<<"That file does not exist"<<endl;
+
+  }
+  else{
+    char a;
+    while(infile >> a){
+      cout<<a<<endl;
+    }
+    
+
+  }
+
+
+
+}
