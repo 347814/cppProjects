@@ -1,6 +1,7 @@
 #include<iostream>
 #include<fstream>
-#include <stdlib.h> 
+#include <stdlib.h>
+#include <cstdlib>
 using namespace std;
 struct student{
   char* firstName;
@@ -22,9 +23,9 @@ int main(){
   int indecies = 100;
   student** students =  new student* [100];
 
-  
+  for(int i = 0; i < 10 ; i++){
   randomStudent(students, indecies, namecount, lastnamecount);
-  randomStudent(students, indecies, namecount, lastnamecount);
+  }
   
   
   
@@ -87,112 +88,150 @@ void addStudent(student* k, int &indecies, student** students){
 
 void randomStudent(student** students, int indecies, int &namecount, int &lastnamecount){
   student* random = new student;
-  //cout<<"Enter the file name that contains first name"<<endl;
-  char* filename = new char[100];
-  //cin.ignore();
-  //cin.get(filename, 100);
   ifstream infile;
   infile.open("firstnames.txt.txt");
-  if(infile.fail()){
-    cout<<"That File does not exist"<<endl;
+  ifstream count;
+  
+  //this loop determines the number of names in the file for bounds for a random number
+  count.open("firstnames.txt.txt");
+  char c;
+  int names = 0;
+  
+  while(count >> noskipws >> c){
+    if(c == ' '){
+      names++;
+    }
 
   }
-  else{
-    char a;
-    char*  readName = new char[100];
-    int j = 0;
-    int spacecount = 0;
+  // cout<<names<<endl;
+  count.close();
 
-    while(infile >> noskipws>> a){
-      if(a != ' '){
-	
-      if(spacecount == namecount){ //if spacecount = namecount this means that the right name is being read
+
+
+
+
+  cout<<names<<endl;
+
+  namecount = rand() % names; //get a random number for the namecount
+  
+  char a;
+  int spacecount = 0; //create a random number between 0 and the counted number of names
+  int j = 0;
+  char* readName = new char[100];
+  while(infile >> noskipws >> a){
+    if(a != ' '){
+      if(spacecount == namecount){
 	readName[j] = a;
 	j++;
       }
-      if(spacecount < namecount){ // keep reading until the right amount of spaces are read
+      
+      else if(spacecount < namecount){
 	//do nothing?
-
       }
       
-      } //end if not == ' '
-      else{
-       
-	spacecount++;
-	
-	if(spacecount > namecount){
-	  namecount++;
-	  break; //finished reading the right name
-	}
-
-
-      }
 
     }
-    random->firstName = readName;
-    cout<<random->firstName<<" ";
+    else{     // a = ' '
+      spacecount ++;
+      if(spacecount > namecount){
+	//namecount++;
+	readName[j] = '\0';
+	break;
+      }
+      
 
-    //now do the same for last name:
-    //  int lastspacecount = 0;
-    /* ifstream infile_2;
-  infile_2.open("lastnames.txt.txt");
-  if(infile_2.fail()){
-    cout<<"That File does not exist"<<endl;
+    }
+
+
+    
+
 
   }
-  else{
-    char a;
-    char*  readLastName = new char[100];
-    int j = 0;
-    int spacecount = 0;
 
-    while(infile_2 >> noskipws>> a){
-      if(a != ' '){
-	
-      if(spacecount == lastnamecount){ //if spacecount = namecount this means that the right name is being read
+  //readName[sizeof(readName) / sizeof(readName[0])] = '\0';
+  //cout<<sizeof(readName) / sizeof(readName[0])<<endl;
+  
+
+  random->firstName = readName;
+  
+  cout<<random->firstName<<" ";
+
+  //now do the same for last name
+
+  
+  char x;
+  ifstream lastcount;
+  int lastnames = 0;
+  lastcount.open("lastnames.txt.txt");
+  while(lastcount >> noskipws >> x){
+    if(x == ' '){
+      lastnames++;
+    }
+
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  char b;
+  spacecount = 0;
+  lastnamecount = rand() % lastnames;
+  j = 0;
+  ifstream lastNameFile;
+  char* readLastName = new char[100];
+  lastNameFile.open("lastnames.txt.txt");
+  while(lastNameFile >> noskipws >> a){
+    if(a != ' '){
+      if(spacecount == lastnamecount){
 	readLastName[j] = a;
 	j++;
       }
-      else if(spacecount < lastnamecount){ // keep reading until the right amount of spaces are read
+      
+      else if(spacecount < lastnamecount){
 	//do nothing?
-
       }
       
-      } //end if not == ' '
-      else{
-       
-	spacecount++;
-	
-	if(spacecount > lastnamecount){
-	  lastnamecount++;
-	  break; //finished reading the right name
-	}
 
-
+    }
+    else{     // a = ' '
+      spacecount ++;
+      if(spacecount > lastnamecount){
+	//lastnamecount++;
+	readLastName[j] = '\0';
+	break;
       }
+      
 
     }
-    random->lastName = readLastName;
-    cout<<random->lastName<<endl;
-
-    
-
-
-
-    
-
-    
-
 
 
     
 
 
-    
-    }
+  }
+
+  readLastName[sizeof(readLastName) / sizeof(readLastName[0])] = '\0';
+
+  random->lastName = readLastName;
+
+
   
-    */}
+  cout<<random->lastName<<endl;;  
+
+  
+
 }
+
+
 
 void chaining(student* k, student* current, int count){
   if(current->next == NULL){
@@ -223,7 +262,10 @@ void rehash(int indecies, student* k, student** students){
   }
   students = new student* [indecies*2];
   //use hashing algorithm to re hash everything
-  
+  for(int i = 0; i < elements; i++){
+   
+      
+  }
 
 
 
