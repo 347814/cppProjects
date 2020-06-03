@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <time.h>
+#include <string.h>
 using namespace std;
 struct student{
   char* firstName;
@@ -20,50 +21,76 @@ void randomStudent(student** students, int indecies, int &namecount, int &lastna
 void chaining(student* k, student* current, int count, student** students, int indecies);
 void rehash(int indecies, student* k, student** students);
 void print(student** students, int indecies);
+void deleteStudent(student** students, int indecies);
+void chainDelete(student* head, student* current, char* searchFirstName, char* searchLastName, int predictedIndex);
 int main(){
   int namecount = 0; //tracks the number of randomly generated names. Knows how many spaces to pass over
   int lastnamecount = 0;
   int indecies = 100;
   student** students =  new student* [100];
   srand(time(NULL));
-  for(int i = 0; i < 200 ; i++){
+  /*  for(int i = 0; i < 20 ; i++){
   randomStudent(students, indecies, namecount, lastnamecount);
   }
   print(students, indecies);
+  */
   
-  
-  
-  /*cout<<"Type a for add, d for delte, p for print"<<endl;
+  while(true){
+  cout<<"Type a for add, d for delte, p for print, r for random"<<endl;
   char com;
   cin>>com;
   
   
   if(com == 'a'){
     student* s = new student;
-    cout<<"Enter the student name";
+    cout<<"Enter the student name"<<endl;
     char* name = new char[100];
     cin.ignore();
     cin.get(name, 99);
     s->firstName = name;
     cout<<"Enter the student last name"<<endl;
-    cin.get(name, 99);
-    s->lastName = name;
+    char* last = new char[100];
+    cin.ignore();
+    cin.get(last, 99);
+    s->lastName = last;
     cout<<"Enter the student GPA"<<endl;
     float studentGPA;
+    cin.ignore();
     cin>>studentGPA;
     s->gpa = studentGPA;
     cout<<"Enter the student ID"<<endl;
     int x;
+    cin.ignore();
     cin>>x;
     s->id = x;
+    s->next = NULL;
     addStudent(s, indecies, students);
     
 
 
   }
 
-  */
+  
+  if(com == 'd'){
+    deleteStudent(students, indecies);
 
+  }
+  if(com == 'p'){
+    print(students, indecies);
+  }
+  if(com == 'q'){
+    break;
+  }
+  if(com == 'r'){
+    cout<<"How many random students"<<endl;
+    int h;
+    cin>>h;
+  for(int i = 0; i < h ; i++){
+  randomStudent(students, indecies, namecount, lastnamecount);
+  } 
+
+  }
+  }
 }
 
 
@@ -254,7 +281,7 @@ void randomStudent(student** students, int indecies, int &namecount, int &lastna
 
   }
 
-  random->id = maxid;
+  random->id = maxid + 1;
   //cout<<random->id<<endl;
 
   //create a random GPA
@@ -330,8 +357,84 @@ void print(student** students, int indecies){
 }
 
 void chainPrint(student* current){
- cout<<current->firstName<<" "<<current->lastName<<", "<<current->id<<", "<<current->gpa<<endl;
+  cout<<current->firstName<<" "<<current->lastName<<", "<<current->id<<", "<<current->gpa<<" chain"<<endl;
  if(current->next != NULL){
    chainPrint(current->next);
  }
 }
+void deleteStudent(student** students, int indecies){
+  cout<<"Enter the First name of the student you wish to delete"<<endl;
+
+  char* searchFirstName = new char[100];
+  cin.ignore();
+  cin.get(searchFirstName, 100);
+
+  cout<<"Enter the Last name of the student you wish to delete"<<endl;
+
+  char* searchLastName = new char[100];
+  cin.ignore();
+  cin.get(searchLastName, 100);
+
+  int predictedIndex;
+  predictedIndex = (searchFirstName[0] * searchLastName[0]) % indecies; //use the hashing algorithm to find the index
+  while(predictedIndex > indecies){
+    predictedIndex = predictedIndex / 2;
+  }
+  
+
+  if(strcmp(students[predictedIndex]->firstName, searchFirstName) == 0 && strcmp(students[predictedIndex]->lastName, searchLastName) == 0){
+
+    if(students[predictedIndex]->next == NULL){
+      students[predictedIndex]->firstName = NULL;
+      students[predictedIndex]->lastName = NULL;
+      delete students[predictedIndex];
+    }
+    else{
+      students[predictedIndex]->next = students[predictedIndex];   //set the next thing to be in the array no chained
+    }
+    
+
+  }
+  else{
+    chainDelete(students[predictedIndex], students[predictedIndex], searchFirstName, searchLastName, predictedIndex);
+
+
+  }
+
+
+
+}
+
+void chainDelete(student* head, student* current, char* searchFirstName, char* searchLastName, int predictedIndex){
+  if(current->next == NULL && strcmp(current->firstName, searchFirstName) != 0){
+    cout<<"No such student exists"<<endl;
+  }
+  
+ //end of chain must be deleted
+  
+  else if(current->next != NULL && strcmp(current->next->firstName, searchFirstName) == 0 && strcmp(current->next->lastName, searchLastName) == 0 && current->next->next == NULL){
+   delete current->next;
+
+
+  }
+  //something in the middle must be deleted
+  else if(current->next != NULL && strcmp(current->next->firstName, searchFirstName) == 0 && strcmp(current->next->lastName, searchLastName) == 0 && current->next != NULL){
+    student* k = current->next;
+    current->next = current->next->next;
+    delete k;
+
+  }
+  else{
+    if(current->next != NULL){
+      chainDelete(head, current->next, searchFirstName, searchLastName, predictedIndex);
+    }
+
+  }
+
+}
+
+
+
+  
+  
+
