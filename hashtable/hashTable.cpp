@@ -11,7 +11,12 @@ struct student{
   float gpa;
   int id;
   student* next;
+  ~student(){
+    delete firstName;
+    delete lastName;
+    delete next;
 
+  }
 
 };
 void chainPrint(student* current);
@@ -380,14 +385,19 @@ void deleteStudent(student** students, int indecies){
   while(predictedIndex > indecies){
     predictedIndex = predictedIndex / 2;
   }
-  
 
-  if(strcmp(students[predictedIndex]->firstName, searchFirstName) == 0 && strcmp(students[predictedIndex]->lastName, searchLastName) == 0){
+
+
+  if(students[predictedIndex] == NULL){
+    cout<<"No such student exists"<<endl;
+  }
+
+  if(students[predictedIndex] != NULL && strcmp(students[predictedIndex]->firstName, searchFirstName) == 0 && strcmp(students[predictedIndex]->lastName, searchLastName) == 0){
 
     if(students[predictedIndex]->next == NULL){
-      students[predictedIndex]->firstName = NULL;
-      students[predictedIndex]->lastName = NULL;
+      
       delete students[predictedIndex];
+      
     }
     else{
       students[predictedIndex]->next = students[predictedIndex];   //set the next thing to be in the array no chained
@@ -395,7 +405,7 @@ void deleteStudent(student** students, int indecies){
     
 
   }
-  else{
+  if(students[predictedIndex] != NULL && students[predictedIndex]->next != NULL){
     chainDelete(students[predictedIndex], students[predictedIndex], searchFirstName, searchLastName, predictedIndex);
 
 
